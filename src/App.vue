@@ -15,25 +15,43 @@ import { useStore } from './store/store'
 const store = useStore()
 store.counter++
 
+//
 // worker imported with query suffixe, see: https://vitejs.dev/guide/features.html#import-with-query-suffixes
+//
 // const worker = new Worker()
 // worker.postMessage('logCounter')
 
+//
 // worker imported with constructor, see: https://vitejs.dev/guide/features.html#import-with-constructors
+//
 const worker2 = new Worker(new URL('./workers/worker.js', import.meta.url), {
   type: 'module'
 })
 worker2.postMessage('logCounter')
 
-// worker with comlink, see: https://github.com/GoogleChromeLabs/comlink
+//
+// worker with comlink using pinia instance, see: https://github.com/GoogleChromeLabs/comlink
+//
 const worker3 = new Worker(new URL('./workers/worker-comlink.js', import.meta.url), {
   type: 'module'
 })
-const workerComlink = Comlink.wrap(worker3)
-const callback = () => {
+const workerComlink1 = Comlink.wrap(worker3)
+const getPiniaInstance = () => {
+    return window._piniaInstance // does not work because the instance coulnd not be cloned
+}
+workerComlink1.logCounter(Comlink.proxy(getPiniaInstance))
+
+//
+// worker with comlink, see: https://github.com/GoogleChromeLabs/comlink
+//
+const worker4 = new Worker(new URL('./workers/worker-comlink.js', import.meta.url), {
+  type: 'module'
+})
+const workerComlink2 = Comlink.wrap(worker3)
+const getCounter = () => {
     return store.counter
 }
-workerComlink.logCounter(Comlink.proxy(callback))
+workerComlink2.logCounter2(Comlink.proxy(getCounter))
 
 </script>
 
