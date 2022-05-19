@@ -14,8 +14,15 @@ import Worker from './workers/worker?worker'
 const store = useStore()
 store.counter++
 
+// worker imported with query suffixe, see: https://vitejs.dev/guide/features.html#import-with-query-suffixes
 const worker = new Worker()
 worker.postMessage('updateCounter')
+
+// worker imported with constructor, see: https://vitejs.dev/guide/features.html#import-with-constructors
+const worker2 = new Worker(new URL('./workers/worker.js', import.meta.url), {
+  type: 'module'
+})
+worker2.postMessage('updateCounter')
 
 </script>
 
