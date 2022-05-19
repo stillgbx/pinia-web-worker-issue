@@ -1,7 +1,8 @@
 import { useStore } from '../store/store'
 
 onmessage = function(evt) {
-    console.log(evt)
-    const store = useStore()
-    store.counter++
-};
+    if (evt.data === 'logCounter') {
+        const store = useStore()
+        console.log('from worker:', store.counter)
+    }
+}
